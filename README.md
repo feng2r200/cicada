@@ -33,6 +33,7 @@ If you are interested, please click [Star](https://github.com/crossoverJie/cicad
 - [x] Clean code, without too much dependency.
 - [x] One line of code to start the HTTP service.
 - [x] [Custom interceptor](#custom-interceptor).
+- [x] [Custom exception handle](#custom-exception-handle).
 - [x] Flexible parameters way.
 - [x] Response `json`.
 - [x] Start with `jar`.
@@ -48,11 +49,20 @@ If you are interested, please click [Star](https://github.com/crossoverJie/cicad
 Create a project with `Maven`, import core dependency.
 
 
-```java
+```xml
 <dependency>
     <groupId>top.crossoverjie.opensource</groupId>
     <artifactId>cicada-core</artifactId>
     <version>x.y.z</version>
+</dependency>
+```
+
+Of course, it is recommended to introduce an additional `IOC` container plugin:
+```xml
+<dependency>
+    <groupId>top.crossoverjie.opensource</groupId>
+    <artifactId>cicada-ioc</artifactId>
+    <version>2.0.1</version>
 </dependency>
 ```
 
@@ -259,6 +269,26 @@ public class ExecuteTimeInterceptor implements CicadaInterceptor {
 }
 ```
 
+## Custom exception handle
+
+You can define global exception handle,like this:
+
+```java
+@CicadaBean
+public class ExceptionHandle implements GlobalHandelException {
+    private final static Logger LOGGER = LoggerBuilder.getLogger(ExceptionHandle.class);
+
+    @Override
+    public void resolveException(CicadaContext context, Exception e) {
+        LOGGER.error("Exception", e);
+        WorkRes workRes = new WorkRes();
+        workRes.setCode("500");
+        workRes.setMessage(e.getClass().getName());
+        context.json(workRes);
+    }
+}
+```
+
 
 ## Performance Test
 
@@ -270,6 +300,11 @@ public class ExecuteTimeInterceptor implements CicadaInterceptor {
 
 
 ## ChangeLog
+
+### v2.0.2
+- fix [#40](https://github.com/TogetherOS/cicada/issues/40) 
+- add global handle exception interface.
+- get bean by class type.
 
 ### v2.0.1
 - Logo.
@@ -301,7 +336,7 @@ public class ExecuteTimeInterceptor implements CicadaInterceptor {
 
 > crossoverJie#gmail.com
 
-<img src="https://ws2.sinaimg.cn/large/006tKfTcly1fsa01u7ro1j30gs0howfq.jpg" width="300"/> 
+![qrcode_for_gh_3a954a025f10_258.jpg](https://i.loli.net/2019/07/09/5d245f3e955ce61699.jpg) 
 
 ## Special thanks
 

@@ -28,6 +28,7 @@
 - [x] 代码简洁，没有过多依赖。
 - [x] 一行代码即可启动 HTTP 服务。
 - [x] [自定义拦截器](#自定义拦截器)。
+- [x] [自定义全局异常](#自定义全局异常).
 - [x] 灵活的传参方式。
 - [x] `json` 响应格式。
 - [x] [自定义配置](#自定义配置)。
@@ -41,11 +42,21 @@
 
 创建一个 maven 项目，引入核心依赖。
 
-```java
+```xml
 <dependency>
     <groupId>top.crossoverjie.opensource</groupId>
     <artifactId>cicada-core</artifactId>
     <version>x.y.z</version>
+</dependency>
+```
+
+当然也推荐额外再引入一个 `IOC` 容器插件：
+
+```xml
+<dependency>
+    <groupId>top.crossoverjie.opensource</groupId>
+    <artifactId>cicada-ioc</artifactId>
+    <version>2.0.1</version>
 </dependency>
 ```
 
@@ -244,6 +255,26 @@ public class ExecuteTimeInterceptor implements CicadaInterceptor {
 }
 ```
 
+## 自定义全局异常
+
+现在你可以自定义全局异常，就像这样：
+
+```java
+@CicadaBean
+public class ExceptionHandle implements GlobalHandelException {
+    private final static Logger LOGGER = LoggerBuilder.getLogger(ExceptionHandle.class);
+
+    @Override
+    public void resolveException(CicadaContext context, Exception e) {
+        LOGGER.error("Exception", e);
+        WorkRes workRes = new WorkRes();
+        workRes.setCode("500");
+        workRes.setMessage(e.getClass().getName());
+        context.json(workRes);
+    }
+}
+```
+
 
 ## 性能测试
 
@@ -254,6 +285,11 @@ public class ExecuteTimeInterceptor implements CicadaInterceptor {
 **每秒将近 10W 请求。**
 
 ## 更新记录
+
+### v2.0.2
+- 修复 [#40](https://github.com/TogetherOS/cicada/issues/40) 
+- 新增全局异常接口。
+- 通过类类型获取 bean。
 
 ### v2.0.1
 - 更新 Logo ,美化日志。
@@ -283,7 +319,7 @@ public class ExecuteTimeInterceptor implements CicadaInterceptor {
 
 > crossoverJie#gmail.com
 
-<img src="https://ws2.sinaimg.cn/large/006tKfTcly1fsa01u7ro1j30gs0howfq.jpg" width="300"/> 
+![qrcode_for_gh_3a954a025f10_258.jpg](https://i.loli.net/2019/07/09/5d245f3e955ce61699.jpg) 
 
 ## 特别感谢
 
